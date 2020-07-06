@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>InputField.qml</file>
+        <file>SubmitButton.qml</file>
+        <file>ManualDevider.qml</file>
+    </qresource>
+</RCC>
