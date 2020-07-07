@@ -3,7 +3,12 @@ import QtQuick.Controls 2.12
 
 Rectangle{
     id: root
-    activeFocusOnTab: true
+    activeFocusOnTab: false
+    onActiveFocusChanged: {
+        //pass input focus to the interrnal TextInput
+        if(activeFocus)
+            textInput.forceActiveFocus();
+    }
 
     property color backgroundColor: "white"
     property color textColor: "black"

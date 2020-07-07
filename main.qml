@@ -26,6 +26,10 @@ Window {
 
             InputField {
                 id: inputField
+                activeFocusOnTab: true
+                Component.onCompleted: {
+                    forceActiveFocus();
+                }
 
                 Layout.minimumHeight: 48
                 Layout.maximumHeight: 48
@@ -39,6 +43,8 @@ Window {
 
             SubmitButton{
                 id: button
+
+                enabled: inputField.text.length > 0
 
                 Layout.fillHeight: true
                 Layout.minimumWidth: 100
@@ -56,25 +62,80 @@ Window {
             Layout.fillWidth: true
             Layout.fillHeight: true
 
-
             Flickable {
                 id: resultContainer
                 anchors.fill: parent
 
                 clip: true
 
+                contentHeight: resultField.height; contentWidth:resultField.width
 
+                Item{
+                    id: resultField
 
-                contentHeight: result.childrenRect.height; contentWidth:result.childrenRect.width
+                    width: firstEntity !== null ? firstEntity.width : 0
+                    height: firstEntity !== null ? firstEntity.height : 0
 
-                Loader{
-                    id: result
-                }
+                    onWidthChanged: {
+                        console.log("Loader.width =", width);
+                    }
+                    onHeightChanged: {
+                        console.log("Loader.height =", height);
+                    }
 
-                Component{
-                    id: resultComponent
-                    ManualDevider{
-                        //devidendVal:
+                    Component{
+                        id: entityComponent
+                        ManualDevider{}
+                    }
+
+                    property ManualDevider firstEntity: null
+
+                    function addSubEntity(parent, onDoneCb){
+                        var onSubChildCreated = function (obj)
+                        {
+                            parent.done.connect(obj.doContinue);
+                            if(!obj.isFinal)
+                                obj.showPartial.connect(resultField.addSubEntity.bind(resultField, obj, onDoneCb));
+                            else
+                                onDoneCb();
+                        }
+
+                        parent.addChild(entityComponent, onSubChildCreated);
+                    }
+
+                    function onComponentComplaeteHandler(comp, onDoneCb)
+                    {
+                        if (comp.status === Component.Ready)
+                        {
+                            var obj = null;
+                            obj = comp.createObject(resultField, {"devidendVal" : parseInt(inputField.text)});
+                            if(obj !== null)
+                            {
+                                resultField.firstEntity = obj;
+                                obj.doContinue();
+                                if(!obj.isFinal)
+                                    obj.showPartial.connect(resultField.addSubEntity.bind(resultField, obj, onDoneCb));
+                                else
+                                    onDoneCb();
+                            }
+                        }
+                    }
+
+                    function createFirstEntity(onDone)
+                    {
+                        var onDoneCb = function()
+                        {
+                            if(typeof onDone === "function")
+                                onDone();
+                        }
+
+                        if (entityComponent.status === Component.Ready)
+                            resultField.onComponentComplaeteHandler(entityComponent, onDoneCb);
+                        else
+                        {
+                            var sigHandler = resultField.onComponentComplaeteHandler.bind(resultField, entityComponent, onDoneCb);
+                            comp.statusChanged.connect(sigHandler);
+                        }
                     }
                 }
 
@@ -85,19 +146,12 @@ Window {
 
         function resultUpdate()
         {
-            result.sourceComponent = null
-            result.sourceComponent = resultComponent;
-
-            var setValue = function (){
-                result.loaded.disconnect(setValue);
-                result.item.devidendVal = parseInt(inputField.text);
-            };
-
-            if(result.status === Loader.Ready)
-                setValue();
-            else
-                result.loaded.connect(setValue);
-
+            if(resultField.firstEntity !== null)
+            {
+                resultField.firstEntity.destroy();
+                resultField.firstEntity = null;
+            }
+            resultField.createFirstEntity(null);
         }
     }
 }
