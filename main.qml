@@ -16,7 +16,21 @@ Window {
         anchors.margins: 32
         spacing: 10
 
+        state: "normal"
+
+        states: [
+            State {
+                name: "calculating"
+                PropertyChanges {
+                    target: inputData
+                    enabled: false
+                }
+            }
+        ]
+
         RowLayout{
+            id: inputData
+
             Layout.alignment: Qt.AlignTop | Qt.AlignHCenter
             Layout.fillWidth: true
             Layout.maximumHeight: 48
@@ -44,7 +58,7 @@ Window {
             SubmitButton{
                 id: button
 
-                enabled: inputField.text.length > 0
+                enabled: inputField.text.length > 0 && parent.enabled
 
                 Layout.fillHeight: true
                 Layout.minimumWidth: 100
@@ -87,10 +101,11 @@ Window {
                         var onSubChildCreated = function (obj)
                         {
                             parent.done.connect(obj.doContinue);
-                            if(!obj.isFinal)
-                                obj.showPartial.connect(resultField.addSubEntity.bind(resultField, obj, onDoneCb));
+
+                            if(obj.isFinal)
+                                obj.done.connect(onDoneCb);
                             else
-                                onDoneCb();
+                                obj.showPartial.connect(resultField.addSubEntity.bind(resultField, obj, onDoneCb));
                         }
 
                         parent.addChild(entityComponent, onSubChildCreated);
@@ -109,7 +124,7 @@ Window {
                                 if(!obj.isFinal)
                                     obj.showPartial.connect(resultField.addSubEntity.bind(resultField, obj, onDoneCb));
                                 else
-                                    onDoneCb();
+                                    obj.done.connect(onDoneCb);
                             }
                         }
                     }
@@ -132,6 +147,10 @@ Window {
                     }
                 }
 
+                Row{
+                    id: result
+                }
+
                 ScrollBar.vertical: ScrollBar {}
                 ScrollBar.horizontal: ScrollBar {}
             }
@@ -139,12 +158,16 @@ Window {
 
         function resultUpdate()
         {
+            mainItem.state = "calculating";
             if(resultField.firstEntity !== null)
             {
                 resultField.firstEntity.destroy();
                 resultField.firstEntity = null;
             }
-            resultField.createFirstEntity(null);
+            resultField.createFirstEntity(function(){
+                console.log("done!!!");
+                mainItem.state = "normal";
+            });
         }
     }
 }

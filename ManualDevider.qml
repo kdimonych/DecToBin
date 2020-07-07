@@ -17,7 +17,7 @@ RowLayout{
     property bool continueAllowed: false
 
     property alias devidendColumnWidth: devidendColumn.width
-    readonly property Item partialContainer: partialValContainer
+    readonly property Item partialContainer: partialValText
 
     readonly property int nextDeviderX: {
         return root.x + resultContentColumn.x
@@ -362,7 +362,7 @@ RowLayout{
             }
 
             Text {
-                id: partialValContainer
+                id: partialValText
 
                 Layout.alignment: Qt.AlignRight
                 Layout.preferredHeight: contentHeight
@@ -385,7 +385,7 @@ RowLayout{
         }
 
         Item {
-            id: name
+            id: loaderWrapper
             Layout.alignment: Qt.AlignLeft
             Layout.preferredWidth: (childEntity.item !== null) ?  childEntity.width : 0
             Layout.preferredHeight: (childEntity.item !== null) ?  childEntity.height : 0
@@ -407,7 +407,6 @@ RowLayout{
                 Behavior on Layout.preferredWidth { SmoothedAnimation{velocity:  root.animationDuration;} }
             }
         }
-
     }
 
     function addChild(childComponent, doneCb)

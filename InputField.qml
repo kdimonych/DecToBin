@@ -84,7 +84,7 @@ Rectangle{
             name: "disabled"
             PropertyChanges {
                 target: root
-                border.color: ColorTools.toWB(root.backgroundColor);
+                border.color: ColorTools.toWB(ColorTools.adjustLightness(root.backgroundColor, -0.2));
                 border.width: 1
             }
             PropertyChanges {
