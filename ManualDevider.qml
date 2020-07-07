@@ -389,7 +389,7 @@ RowLayout{
             Layout.alignment: Qt.AlignLeft
             Layout.preferredWidth: (childEntity.item !== null) ?  childEntity.width : 0
             Layout.preferredHeight: (childEntity.item !== null) ?  childEntity.height : 0
-            Layout.leftMargin:  (childEntity.item !== null) ? Math.max(devisorColumn.width - childEntity.item.devidendColumnWidth, 0) : 0
+            Layout.leftMargin:  (childEntity.item !== null) ? Math.max(devisorColumn.width - childEntity.item.devidendColumnWidth, 2) : 0
 
             Loader{
                 id: childEntity
