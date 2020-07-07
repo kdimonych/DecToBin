@@ -17,7 +17,7 @@ RowLayout{
     property bool continueAllowed: false
 
     property alias devidendColumnWidth: devidendColumn.width
-    readonly property Item partialContainer: partialValText
+    readonly property Item child: childEntity.item
 
     readonly property int nextDeviderX: {
         return root.x + resultContentColumn.x
