@@ -6,13 +6,6 @@ RowLayout{
     id: root
     spacing: 0
 
-    onWidthChanged: {
-        console.log("root of", root.devidendVal,"width =", width);
-    }
-    onHeightChanged: {
-        console.log("root of", root.devidendVal,"height =", height);
-    }
-
     property int devidendVal: 0
     property int deviderVal: 2
     property int partialVal: Math.floor(root.devidendVal/root.deviderVal)
@@ -94,11 +87,8 @@ RowLayout{
 
         function nextStep()
         {
-            console.log("" + devidendVal + ":", "root.nextStateIndex =", root.nextStateIndex);
             root.state = root.stateSequence[root.nextStateIndex];
             ++root.nextStateIndex;
-            console.log("" + devidendVal + ":", "current state =", root.state);
-            console.log("" + devidendVal + ":", "next state =", root.stateSequence[root.nextStateIndex]);
         }
 
         onTriggered: {
@@ -406,13 +396,6 @@ RowLayout{
                 active: !root.isFinal
 
                 asynchronous: true
-
-                onWidthChanged: {
-                    console.log("Loader of", root.devidendVal,"width =", width);
-                }
-                onHeightChanged: {
-                    console.log("Loader of", root.devidendVal,"height =", height);
-                }
 
                 onLoaded: {
                     if(status === Loader.Ready){

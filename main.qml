@@ -76,13 +76,6 @@ Window {
                     width: firstEntity !== null ? firstEntity.width : 0
                     height: firstEntity !== null ? firstEntity.height : 0
 
-                    onWidthChanged: {
-                        console.log("Loader.width =", width);
-                    }
-                    onHeightChanged: {
-                        console.log("Loader.height =", height);
-                    }
-
                     Component{
                         id: entityComponent
                         ManualDevider{}
